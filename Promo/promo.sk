@@ -1,0 +1,48 @@
+#Promo.sk - V1.0
+#By nfell2009
+
+options:
+	P: &8[&aP&8]&a
+
+command /promo [<text>] [<text>]:
+	description: Main Promo Command
+	permission: obam.promo
+	trigger:
+		if arg 1 is not set:
+			message "{@P} Promo List:"
+			loop {promo.list::*}:
+				if {promo.%player%.%loop-value%} is true:
+					message "{@P} <strike>%loop-value%"
+				else:
+					message "{@P} %loop-value%"
+		else if arg 1 is "add":
+			the player has permission "obam.promo.admin":
+				if arg 2 is not set:
+					message "{@P} You must give a name to the Promo!"
+				else if {promo.%arg 2%.p} is not set:
+					loop all items in the player's inventory:
+						add loop-item to {promo.%arg 2%.p::*}
+					add arg 2 to {promo.list::*}
+					set {promo.%arg 2%.p} to true
+					message "{@P} Added: %arg 2% to the Promo List!"
+				else:
+					message "{@P} This promo already exists!"
+		else if arg 1 is "remove":
+			the player has permission "obam.promo.admin":
+				if arg 2 is not set:
+					message "{@P} You must give a name to the Promo!"
+				else if {promo.%arg 2%.p} is not set:
+					message "{@P} Couldn't find promo to remove!"
+				else:
+					remove arg 2 from {promo.list::*}
+					delete {promo.%arg 2%.p}
+					message "{@P} Deleted promo: %arg 2%"
+		else if {promo.%arg 1%.p} is true:
+			if {promo.%player%.%arg 1%} is not set:
+				give {promo.%arg 1%.p::*} to player
+				set {promo.%player%.%arg 1%} to true
+				message "{@P} You claimed the promo: %arg 1%"
+			else:
+				message "{@P} You've already claimed this promo!"
+		else:
+			message "{@P} Unknown command or promo name!"
