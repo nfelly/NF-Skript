@@ -1,0 +1,246 @@
+#Parkour Recorder
+#By nfell2009
+
+options:
+	P: &8[&aPK&8]&a
+	S: SOME NAME HERE
+
+command /pk-install <text>:
+	permission: pk.admin
+	usage: /pk-install <map>
+	trigger:
+		if arg 1 is not set:
+			message "{@P} You must give a map name to install!"
+		else:
+			set {pk.1.%arg 1%.player} to "{@S}"
+			set {pk.2.%arg 1%.player} to "{@S}"
+			set {pk.3.%arg 1%.player} to "{@S}"
+			set {pk.4.%arg 1%.player} to "{@S}"
+			set {pk.5.%arg 1%.player} to "{@S}"
+			set {pk.6.%arg 1%.player} to "{@S}"
+			set {pk.7.%arg 1%.player} to "{@S}"
+			set {pk.8.%arg 1%.player} to "{@S}"
+			set {pk.9.%arg 1%.player} to "{@S}"
+			set {pk.10.%arg 1%.player} to "{@S}"
+			set {pk.10.%arg 1%.time} to 25 seconds
+			set {pk.9.%arg 1%.time} to 22.5 seconds
+			set {pk.8.%arg 1%.time} to 20 seconds
+			set {pk.7.%arg 1%.time} to 17.5 seconds
+			set {pk.6.%arg 1%.time} to 15 seconds
+			set {pk.5.%arg 1%.time} to 12.5 seconds
+			set {pk.4.%arg 1%.time} to 10 seconds
+			set {pk.3.%arg 1%.time} to 7.5 seconds
+			set {pk.2.%arg 1%.time} to 5 seconds
+			set {pk.1.%arg 1%.time} to 2.5 seconds
+			message "{@P} Installed Parkour! For Map: %arg 1%"
+			
+			
+			
+on sign change:
+	line 1 of block is "parkour" or "pk" or "[PARKOUR]":
+		player has permission "pk.admin":
+			set line 1 of block to "[PARKOUR]"
+			if line 2 is not set:
+				message "{@P} You must set a sign type!"
+				cancel event
+				drop 1 sign at location of event-block
+			else if line 2 of block is "s" or "start" or "START":
+				set line 2 of block to "START"
+			else if line 2 of block is "e" or "end" or "END":
+				set line 2 of block to "END"
+			else if line 2 of block is "st" or "stats" or "STATS":
+				set line 2 of block to "STATS"
+			else if line 2 of block is "ls" or "live stat" or "live stats" or "Live Stats":
+				set line 2 of block to "Live Stats"
+			if line 3 is set:
+				message "{@P} Created a [PARKOUR] Sign!"
+				message "{@P} Type: %line 2 of block%"
+				message "{@P} Map: %line 3 of block%"
+			else:
+				message "{@P} You must give a map name!"
+				cancel event
+				drop 1 sign at location of event-block
+					
+on stepping on a pressure plate:
+	loop blocks 2 below event-block:
+		loop-block is sign:
+			line 1 of loop-block is "[PARKOUR]":
+				if line 2 of loop-block is "START":
+					set {pk.%player%.start} to now
+					set {pk.%player%.%line 3 of loop-block%.playing} to "True"
+					message "{@P} Started Parkour!"
+				else if line 2 of loop-block is "END":
+					if line 3 of loop-block is set:
+						if {pk.%player%.%line 3 of loop-block%.playing} is "True":
+							set {pk.%player%.finished} to difference between {pk.%player%.start} and now
+							message "{@P} You finished in: %{pk.%player%.finished}%"
+							set {pk.%player%.%line 3 of loop-block%.playing} to "False"
+							if {pk.%player%.finished} is less than {pk.1.%line 3 of loop-block%.time}:
+								set {pk.10.%line 3 of loop-block%.player} to {pk.9.%line 3 of loop-block%.player}
+								set {pk.10.%line 3 of loop-block%.time} to {pk.9.%line 3 of loop-block%.time}
+								set {pk.9.%line 3 of loop-block%.player} to {pk.8.%line 3 of loop-block%.player}
+								set {pk.9.%line 3 of loop-block%.time} to {pk.8.%line 3 of loop-block%.time}
+								set {pk.8.%line 3 of loop-block%.player} to {pk.7.%line 3 of loop-block%.player}
+								set {pk.8.%line 3 of loop-block%.time} to {pk.7.%line 3 of loop-block%.time}
+								set {pk.7.%line 3 of loop-block%.player} to {pk.6.%line 3 of loop-block%.player}
+								set {pk.7.%line 3 of loop-block%.time} to {pk.6.%line 3 of loop-block%.time}
+								set {pk.6.%line 3 of loop-block%.player} to {pk.5.%line 3 of loop-block%.player}
+								set {pk.6.%line 3 of loop-block%.time} to {pk.5.%line 3 of loop-block%.time}
+								set {pk.5.%line 3 of loop-block%.player} to {pk.4.%line 3 of loop-block%.player}
+								set {pk.5.%line 3 of loop-block%.time} to {pk.4.%line 3 of loop-block%.time}
+								set {pk.4.%line 3 of loop-block%.player} to {pk.3.%line 3 of loop-block%.player}
+								set {pk.4.%line 3 of loop-block%.time} to {pk.3.%line 3 of loop-block%.time}
+								set {pk.3.%line 3 of loop-block%.player} to {pk.2.%line 3 of loop-block%.player}
+								set {pk.3.%line 3 of loop-block%.time} to {pk.2.%line 3 of loop-block%.time}
+								set {pk.2.%line 3 of loop-block%.player} to {pk.1.%line 3 of loop-block%.player}
+								set {pk.2.%line 3 of loop-block%.time} to {pk.1.%line 3 of loop-block%.time}
+								message "{@P} You beat: %{pk.1.%line 3 of loop-block%.player}% - %{pk.1.%line 3 of loop-block%.time}% as you had: %{pk.%player%.finished}%"
+								set {pk.1.%line 3 of loop-block%.player} to player
+								set {pk.1.%line 3 of loop-block%.time} to {pk.%player%.finished}
+							else if {pk.%player%.finished} is less than {pk.2.%line 3 of loop-block%.time}:
+								set {pk.10.%line 3 of loop-block%.player} to {pk.9.%line 3 of loop-block%.player}
+								set {pk.10.%line 3 of loop-block%.time} to {pk.9.%line 3 of loop-block%.time}
+								set {pk.9.%line 3 of loop-block%.player} to {pk.8.%line 3 of loop-block%.player}
+								set {pk.9.%line 3 of loop-block%.time} to {pk.8.%line 3 of loop-block%.time}
+								set {pk.8.%line 3 of loop-block%.player} to {pk.7.%line 3 of loop-block%.player}
+								set {pk.8.%line 3 of loop-block%.time} to {pk.7.%line 3 of loop-block%.time}
+								set {pk.7.%line 3 of loop-block%.player} to {pk.6.%line 3 of loop-block%.player}
+								set {pk.7.%line 3 of loop-block%.time} to {pk.6.%line 3 of loop-block%.time}
+								set {pk.6.%line 3 of loop-block%.player} to {pk.5.%line 3 of loop-block%.player}
+								set {pk.6.%line 3 of loop-block%.time} to {pk.5.%line 3 of loop-block%.time}
+								set {pk.5.%line 3 of loop-block%.player} to {pk.4.%line 3 of loop-block%.player}
+								set {pk.5.%line 3 of loop-block%.time} to {pk.4.%line 3 of loop-block%.time}
+								set {pk.4.%line 3 of loop-block%.player} to {pk.3.%line 3 of loop-block%.player}
+								set {pk.4.%line 3 of loop-block%.time} to {pk.3.%line 3 of loop-block%.time}
+								set {pk.3.%line 3 of loop-block%.player} to {pk.2.%line 3 of loop-block%.player}
+								set {pk.3.%line 3 of loop-block%.time} to {pk.2.%line 3 of loop-block%.time}
+								message "{@P} You beat: %{pk.2.%line 3 of loop-block%.player}% - %{pk.2.%line 3 of loop-block%.time}% as you had: %{pk.%player%.finished}%"
+								set {pk.2.%line 3 of loop-block%.player} to player
+								set {pk.2.%line 3 of loop-block%.time} to {pk.%player%.finished}
+							else if {pk.%player%.finished} is less than {pk.3.%line 3 of loop-block%.time}:
+								set {pk.10.%line 3 of loop-block%.player} to {pk.9.%line 3 of loop-block%.player}
+								set {pk.10.%line 3 of loop-block%.time} to {pk.9.%line 3 of loop-block%.time}
+								set {pk.9.%line 3 of loop-block%.player} to {pk.8.%line 3 of loop-block%.player}
+								set {pk.9.%line 3 of loop-block%.time} to {pk.8.%line 3 of loop-block%.time}
+								set {pk.8.%line 3 of loop-block%.player} to {pk.7.%line 3 of loop-block%.player}
+								set {pk.8.%line 3 of loop-block%.time} to {pk.7.%line 3 of loop-block%.time}
+								set {pk.7.%line 3 of loop-block%.player} to {pk.6.%line 3 of loop-block%.player}
+								set {pk.7.%line 3 of loop-block%.time} to {pk.6.%line 3 of loop-block%.time}
+								set {pk.6.%line 3 of loop-block%.player} to {pk.5.%line 3 of loop-block%.player}
+								set {pk.6.%line 3 of loop-block%.time} to {pk.5.%line 3 of loop-block%.time}
+								set {pk.5.%line 3 of loop-block%.player} to {pk.4.%line 3 of loop-block%.player}
+								set {pk.5.%line 3 of loop-block%.time} to {pk.4.%line 3 of loop-block%.time}
+								set {pk.4.%line 3 of loop-block%.player} to {pk.3.%line 3 of loop-block%.player}
+								set {pk.4.%line 3 of loop-block%.time} to {pk.3.%line 3 of loop-block%.time}
+								message "{@P} You beat: %{pk.3.%line 3 of loop-block%.player}% - %{pk.3.%line 3 of loop-block%.time}% as you had: %{pk.%player%.finished}%"
+								set {pk.3.%line 3 of loop-block%.player} to player
+								set {pk.3.%line 3 of loop-block%.time} to {pk.%player%.finished}
+							else if {pk.%player%.finished} is less than {pk.4.%line 3 of loop-block%.time}:
+								set {pk.10.%line 3 of loop-block%.player} to {pk.9.%line 3 of loop-block%.player}
+								set {pk.10.%line 3 of loop-block%.time} to {pk.9.%line 3 of loop-block%.time}
+								set {pk.9.%line 3 of loop-block%.player} to {pk.8.%line 3 of loop-block%.player}
+								set {pk.9.%line 3 of loop-block%.time} to {pk.8.%line 3 of loop-block%.time}
+								set {pk.8.%line 3 of loop-block%.player} to {pk.7.%line 3 of loop-block%.player}
+								set {pk.8.%line 3 of loop-block%.time} to {pk.7.%line 3 of loop-block%.time}
+								set {pk.7.%line 3 of loop-block%.player} to {pk.6.%line 3 of loop-block%.player}
+								set {pk.7.%line 3 of loop-block%.time} to {pk.6.%line 3 of loop-block%.time}
+								set {pk.6.%line 3 of loop-block%.player} to {pk.5.%line 3 of loop-block%.player}
+								set {pk.6.%line 3 of loop-block%.time} to {pk.5.%line 3 of loop-block%.time}
+								set {pk.5.%line 3 of loop-block%.player} to {pk.4.%line 3 of loop-block%.player}
+								set {pk.5.%line 3 of loop-block%.time} to {pk.4.%line 3 of loop-block%.time}
+								message "{@P} You beat: %{pk.4.%line 3 of loop-block%.player}% - %{pk.4.%line 3 of loop-block%.time}% as you had: %{pk.%player%.finished}%"
+								set {pk.4.%line 3 of loop-block%.player} to player
+								set {pk.4.%line 3 of loop-block%.time} to {pk.%player%.finished}
+							else if {pk.%player%.finished} is less than {pk.5.%line 3 of loop-block%.time}:
+								set {pk.10.%line 3 of loop-block%.player} to {pk.9.%line 3 of loop-block%.player}
+								set {pk.10.%line 3 of loop-block%.time} to {pk.9.%line 3 of loop-block%.time}
+								set {pk.9.%line 3 of loop-block%.player} to {pk.8.%line 3 of loop-block%.player}
+								set {pk.9.%line 3 of loop-block%.time} to {pk.8.%line 3 of loop-block%.time}
+								set {pk.8.%line 3 of loop-block%.player} to {pk.7.%line 3 of loop-block%.player}
+								set {pk.8.%line 3 of loop-block%.time} to {pk.7.%line 3 of loop-block%.time}
+								set {pk.7.%line 3 of loop-block%.player} to {pk.6.%line 3 of loop-block%.player}
+								set {pk.7.%line 3 of loop-block%.time} to {pk.6.%line 3 of loop-block%.time}
+								set {pk.6.%line 3 of loop-block%.player} to {pk.5.%line 3 of loop-block%.player}
+								set {pk.6.%line 3 of loop-block%.time} to {pk.5.%line 3 of loop-block%.time}
+								message "{@P} You beat: %{pk.5.%line 3 of loop-block%.player}% - %{pk.5.%line 3 of loop-block%.time}% as you had: %{pk.%player%.finished}%"
+								set {pk.5.%line 3 of loop-block%.player} to player
+								set {pk.5.%line 3 of loop-block%.time} to {pk.%player%.finished}
+							else if {pk.%player%.finished} is less than {pk.6.%line 3 of loop-block%.time}:
+								set {pk.10.%line 3 of loop-block%.player} to {pk.9.%line 3 of loop-block%.player}
+								set {pk.10.%line 3 of loop-block%.time} to {pk.9.%line 3 of loop-block%.time}
+								set {pk.9.%line 3 of loop-block%.player} to {pk.8.%line 3 of loop-block%.player}
+								set {pk.9.%line 3 of loop-block%.time} to {pk.8.%line 3 of loop-block%.time}
+								set {pk.8.%line 3 of loop-block%.player} to {pk.7.%line 3 of loop-block%.player}
+								set {pk.8.%line 3 of loop-block%.time} to {pk.7.%line 3 of loop-block%.time}
+								set {pk.7.%line 3 of loop-block%.player} to {pk.6.%line 3 of loop-block%.player}
+								set {pk.7.%line 3 of loop-block%.time} to {pk.6.%line 3 of loop-block%.time}
+								message "{@P} You beat: %{pk.6.%line 3 of loop-block%.player}% - %{pk.6.%line 3 of loop-block%.time}% as you had: %{pk.%player%.finished}%"
+								set {pk.1.%line 3 of loop-block%.player} to player
+								set {pk.6.%line 3 of loop-block%.time} to {pk.%player%.finished}
+							else if {pk.%player%.finished} is less than {pk.7.%line 3 of loop-block%.time}:
+								set {pk.10.%line 3 of loop-block%.player} to {pk.9.%line 3 of loop-block%.player}
+								set {pk.10.%line 3 of loop-block%.time} to {pk.9.%line 3 of loop-block%.time}
+								set {pk.9.%line 3 of loop-block%.player} to {pk.8.%line 3 of loop-block%.player}
+								set {pk.9.%line 3 of loop-block%.time} to {pk.8.%line 3 of loop-block%.time}	
+								set {pk.8.%line 3 of loop-block%.player} to {pk.7.%line 3 of loop-block%.player}
+								set {pk.8.%line 3 of loop-block%.time} to {pk.7.%line 3 of loop-block%.time}
+								message "{@P} You beat: %{pk.7.%line 3 of loop-block%.player}% - %{pk.7.%line 3 of loop-block%.time}% as you had: %{pk.%player%.finished}%"
+								set {pk.7.%line 3 of loop-block%.player} to player
+								set {pk.7.%line 3 of loop-block%.time} to {pk.%player%.finished}
+							else if {pk.%player%.finished} is less than {pk.8.%line 3 of loop-block%.time}:
+								set {pk.10.%line 3 of loop-block%.player} to {pk.9.%line 3 of loop-block%.player}
+								set {pk.10.%line 3 of loop-block%.time} to {pk.9.%line 3 of loop-block%.time}
+								set {pk.9.%line 3 of loop-block%.player} to {pk.8.%line 3 of loop-block%.player}
+								set {pk.9.%line 3 of loop-block%.time} to {pk.8.%line 3 of loop-block%.time}
+								message "{@P} You beat: %{pk.8.%line 3 of loop-block%.player}% - %{pk.8.%line 3 of loop-block%.time}% as you had: %{pk.%player%.finished}%"
+								set {pk.8.%line 3 of loop-block%.player} to player
+								set {pk.8.%line 3 of loop-block%.time} to {pk.%player%.finished}
+							else if {pk.%player%.finished} is less than {pk.9.%line 3 of loop-block%.time}:
+								set {pk.10.%line 3 of loop-block%.player} to {pk.9.%line 3 of loop-block%.player}
+								set {pk.10.%line 3 of loop-block%.time} to {pk.9.%line 3 of loop-block%.time}
+								message "{@P} You beat: %{pk.9.%line 3 of loop-block%.player}% - %{pk.9.%line 3 of loop-block%.time}% as you had: %{pk.%player%.finished}%"
+								set {pk.9.%line 3 of loop-block%.player} to player
+								set {pk.9.%line 3 of loop-block%.time} to {pk.%player%.finished}
+							else if {pk.%player%.finished} is less than {pk.10.%line 3 of loop-block%.time}:
+								message "{@P} You beat: %{pk.10.%line 3 of loop-block%.player}% - %{pk.10.%line 3 of loop-block%.time}% as you had: %{pk.%player%.finished}%"
+								set {pk.10.%line 3 of loop-block%.player} to player
+								set {pk.10.%line 3 of loop-block%.time} to {pk.%player%.finished}
+							else:
+								message "{@P} You didn't manage to come into the top ten! :("
+						else:
+							message "{@P} You're currently not playing a parkour map to end!"
+				else if line 2 of loop-block is "STATS":
+					message "{@P} Parkour Top 10 for map: %line 3 of loop-block%"
+					message "{@P} 1- %{pk.1.%line 3 of loop-block%.player}% - %{pk.1.%line 3 of loop-block%.time}%"
+					message "{@P} 2- %{pk.2.%line 3 of loop-block%.player}% - %{pk.2.%line 3 of loop-block%.time}%"
+					message "{@P} 3- %{pk.3.%line 3 of loop-block%.player}% - %{pk.3.%line 3 of loop-block%.time}%"
+					message "{@P} 4- %{pk.4.%line 3 of loop-block%.player}% - %{pk.4.%line 3 of loop-block%.time}%"
+					message "{@P} 5- %{pk.5.%line 3 of loop-block%.player}% - %{pk.5.%line 3 of loop-block%.time}%"
+					message "{@P} 6- %{pk.6.%line 3 of loop-block%.player}% - %{pk.6.%line 3 of loop-block%.time}%"
+					message "{@P} 7- %{pk.7.%line 3 of loop-block%.player}% - %{pk.7.%line 3 of loop-block%.time}%"
+					message "{@P} 8- %{pk.8.%line 3 of loop-block%.player}% - %{pk.8.%line 3 of loop-block%.time}%"
+					message "{@P} 9- %{pk.9.%line 3 of loop-block%.player}% - %{pk.9.%line 3 of loop-block%.time}%"
+					message "{@P} 10- %{pk.10.%line 3 of loop-block%.player}% - %{pk.10.%line 3 of loop-block%.time}%"
+				else:
+					message "{@P} There was no arena found! And we couldn't save your score :("
+					
+on rightclick on sign:
+	if line 1 of block is "[PARKOUR]":
+		if line 2 of block is "STATS":
+			if line 3 of block is set:
+				message "{@P} Parkour Top 10 for map: %line 3 of block%"
+				message "{@P} 1- %{pk.1.%line 3 of block%.player}% - %{pk.1.%line 3 of block%.time}%"
+				message "{@P} 2- %{pk.2.%line 3 of block%.player}% - %{pk.2.%line 3 of block%.time}%"
+				message "{@P} 3- %{pk.3.%line 3 of block%.player}% - %{pk.3.%line 3 of block%.time}%"
+				message "{@P} 4- %{pk.4.%line 3 of block%.player}% - %{pk.4.%line 3 of block%.time}%"
+				message "{@P} 5- %{pk.5.%line 3 of block%.player}% - %{pk.5.%line 3 of block%.time}%"
+				message "{@P} 6- %{pk.6.%line 3 of block%.player}% - %{pk.6.%line 3 of block%.time}%"
+				message "{@P} 7- %{pk.7.%line 3 of block%.player}% - %{pk.7.%line 3 of block%.time}%"
+				message "{@P} 8- %{pk.8.%line 3 of block%.player}% - %{pk.8.%line 3 of block%.time}%"
+				message "{@P} 9- %{pk.9.%line 3 of block%.player}% - %{pk.9.%line 3 of block%.time}%"
+				message "{@P} 10- %{pk.10.%line 3 of block%.player}% - %{pk.10.%line 3 of block%.time}%"
+			else:
+				message "{@P} No map data found!"
+		else if line 2 of block is "Live Stats":
+			if line 3 of block is set:
+				set line 4 of block to "%{pk.1.%line 3 of block%.player}%"
