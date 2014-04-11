@@ -1,0 +1,54 @@
+#Parkour Recorder Auto-Sign
+#THIS REQUIRES THE PARKOURMAIN TO RUN!
+#By nfell2009
+
+options:
+	P: &8[&aPK&8]&a
+
+command /pk-plus [<text>] [<text>]:
+	description: Main ParkourSignsPlus command
+	permission: pk.admin
+	trigger:
+		if arg 1 is not set:
+			message "{@P} Help Menu:"
+			message "{@P} /pk-plus help - This menu"
+			message "{@P} /pk-plus remove - Removes targeted block from being updated"
+			message "{@P} /pk-plus errors <off|on|status> - Settings for errors"
+		else if arg 1 is "remove":
+			remove location of targeted block from {pk.autosigns::*}
+			message "{@P} Removed Auto-Sign From:"
+			message "{@P} %location of targeted block%"
+		else if arg 1 is "errors":
+			if arg 2 is not set:
+				message "{@P} What error setting would you like to see? on|off|status"
+			else if arg 2 is "on":
+				set {pk.%player%.errors} to "On"
+				message "{@P} Turned on errors!"
+			else if arg 2 is "off":
+				set {pk.%player%.errors} to "Off"
+				message "{@P} Turned off errors!"
+			else:
+				message "{@P} Your error status is: %{pk.%player%.errors}%"
+		else if arg 1 is "help":
+			make player execute command "/pk-plus"
+		else:
+			message "{@P} Unknown command! Do /pk-plus help - for help!"
+		
+on sign change:
+	line 1 of block is "parkour" or "pk" or "[PARKOUR]":
+		player has permission "pk.admin":
+			if line 2 of block is "ls" or "live stat" or "live stats" or "Live Stats":
+				if line 3 of block is set:
+					message "{@P} Added a Live Stats Auto-Sign!"
+					add location of block to {pk.autosigns::*}
+	
+every 10 seconds:
+	loop {pk.autosigns::*}:
+		if block at loop-value is sign:
+			if line 3 of block at loop-value is set:
+				set line 4 of block at loop-value to "%{pk.1.%line 3 of block at loop-value%.player}%"
+		else:
+			loop all players:
+				loop-player has permission "pk.admin":
+					{pk.%loop-player%.errors} is "On":
+						send "{@P} Failed to update block at: %loop-value% - are you sure its a sign?" to loop-player
