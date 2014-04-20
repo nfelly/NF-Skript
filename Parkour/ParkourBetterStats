@@ -1,0 +1,41 @@
+#Parkour Better Stats
+#By nfell2009
+
+options:
+	P: &8[&aPK&8]&a
+
+command /pk-reset [<text>] [<text>]:
+	permission: pk.admin
+	usage: /pk-reset <map> <line>
+	trigger:
+		if arg 1 is not set:
+			message "{@P} You must give a map name!"
+		else if arg 2 is not set:
+			message "{@P} You must give a line number!"
+		else:
+			set {pk.%arg 2%.%arg 1%.player} to "%{pk.defaultname}%"
+			if arg 2 is "10":
+				set {pk.%arg 2%.%arg 1%.time} to 25 seconds
+			else if arg 2 is "9":
+				set {pk.%arg 2%.%arg 1%.time} to 22.5 seconds
+			else if arg 2 is "8":
+				set {pk.%arg 2%.%arg 1%.time} to 20 seconds
+			else if arg 2 is "7":
+				set {pk.%arg 2%.%arg 1%.time} to 17.5 seconds
+			else if arg 2 is "6":
+				set {pk.%arg 2%.%arg 1%.time} to 15 seconds
+			else if arg 2 is "5": 
+				set {pk.%arg 2%.%arg 1%.time} to 12.5 seconds
+			else if arg 2 is "4":
+				set {pk.%arg 2%.%arg 1%.time} to 10 seconds
+			else if arg 2 is "3":
+				set {pk.%arg 2%.%arg 1%.time} to 7.5 seconds
+			else if arg 2 is "2":
+				set {pk.%arg 2%.%arg 1%.time} to 5 seconds
+			else if arg 2 is "1":
+				set {pk.%arg 2%.%arg 1%.time} to 2.5 seconds
+			else:
+				message "{@P} Unknown line number"
+			message "{@P} Set line: %arg 2% for map: %arg 1% to:"
+			message "{@P} Player: %{pk.defaultname}%"
+			message "{@P} Time: %{pk.%arg 2%.%arg 1%.time}%"
