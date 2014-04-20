@@ -1,10 +1,27 @@
-#Parkour Recorder
+#Parkour Main
 #By nfell2009
 
 options:
 	P: &8[&aPK&8]&a
-	S: SOME NAME HERE
 
+variables:
+	{pk.defaultname} = "Parkour"
+	
+command /pk-default [<text>] [<text>]:
+	permission: pk.admin
+	usage: /pk-default <status|set> [name]
+	trigger:
+		if arg 1 is not set:
+			message "{@P} Would you like to see or set?"
+		else if arg 1 is "see" or "status":
+			message "{@P} Default parkour name: %{pk.defaultname}%"
+		else if arg 1 is "set":
+			if arg 2 is not set:
+				message "{@P} You must give a name to set too!"
+			else:
+				set {pk.defaultname} to arg 2
+				message "{@P} Set default name to: %{pk.defaultname}%"
+	
 command /pk-install <text>:
 	permission: pk.admin
 	usage: /pk-install <map>
@@ -12,16 +29,16 @@ command /pk-install <text>:
 		if arg 1 is not set:
 			message "{@P} You must give a map name to install!"
 		else:
-			set {pk.1.%arg 1%.player} to "{@S}"
-			set {pk.2.%arg 1%.player} to "{@S}"
-			set {pk.3.%arg 1%.player} to "{@S}"
-			set {pk.4.%arg 1%.player} to "{@S}"
-			set {pk.5.%arg 1%.player} to "{@S}"
-			set {pk.6.%arg 1%.player} to "{@S}"
-			set {pk.7.%arg 1%.player} to "{@S}"
-			set {pk.8.%arg 1%.player} to "{@S}"
-			set {pk.9.%arg 1%.player} to "{@S}"
-			set {pk.10.%arg 1%.player} to "{@S}"
+			set {pk.1.%arg 1%.player} to "%{pk.defaultname}%"
+			set {pk.2.%arg 1%.player} to "%{pk.defaultname}%"
+			set {pk.3.%arg 1%.player} to "%{pk.defaultname}%"
+			set {pk.4.%arg 1%.player} to "%{pk.defaultname}%"
+			set {pk.5.%arg 1%.player} to "%{pk.defaultname}%"
+			set {pk.6.%arg 1%.player} to "%{pk.defaultname}%"
+			set {pk.7.%arg 1%.player} to "%{pk.defaultname}%"
+			set {pk.8.%arg 1%.player} to "%{pk.defaultname}%"
+			set {pk.9.%arg 1%.player} to "%{pk.defaultname}%"
+			set {pk.10.%arg 1%.player} to "%{pk.defaultname}%"
 			set {pk.10.%arg 1%.time} to 25 seconds
 			set {pk.9.%arg 1%.time} to 22.5 seconds
 			set {pk.8.%arg 1%.time} to 20 seconds
