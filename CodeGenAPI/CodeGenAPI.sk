@@ -1,0 +1,148 @@
+#CodeGenAPI
+#By nfell2009
+
+options:
+	P: &8[&aCGA&8]&a
+
+on script load:
+	delete {cga.list::*}
+	add "a" to {cga.list::*}
+	add "b" to {cga.list::*}
+	add "c" to {cga.list::*}
+	add "d" to {cga.list::*}
+	add "e" to {cga.list::*}
+	add "f" to {cga.list::*}
+	add "g" to {cga.list::*}
+	add "h" to {cga.list::*}
+	add "i" to {cga.list::*}
+	add "j" to {cga.list::*}
+	add "k" to {cga.list::*}
+	add "l" to {cga.list::*}
+	add "m" to {cga.list::*}
+	add "n" to {cga.list::*}
+	add "o" to {cga.list::*}
+	add "p" to {cga.list::*}
+	add "q" to {cga.list::*}
+	add "r" to {cga.list::*}
+	add "s" to {cga.list::*}
+	add "t" to {cga.list::*}
+	add "u" to {cga.list::*}
+	add "v" to {cga.list::*}
+	add "w" to {cga.list::*}
+	add "x" to {cga.list::*}
+	add "y" to {cga.list::*}
+	add "z" to {cga.list::*}
+	add "1" to {cga.list::*}
+	add "2" to {cga.list::*}
+	add "3" to {cga.list::*}
+	add "4" to {cga.list::*}
+	add "5" to {cga.list::*}
+	add "6" to {cga.list::*}
+	add "7" to {cga.list::*}
+	add "8" to {cga.list::*}
+	add "9" to {cga.list::*}
+	set {cga.max} to size of {cga.list::*}
+	
+command /cgapi [<text>] [<text>]:
+	permission: codegenapi.usage
+	trigger:
+		if arg 1 is not set:
+			message "{@P} You must provide a sub-command!"
+		else if arg 1 is "api":
+			if arg 2 is "hooks" or "list":
+				if size of {cga.apilist.codes::*} is 0:
+					message "{@P} There are currently no scripts hooked into CodeGenAPI"
+				else:
+					loop {cga.apilist.codes::*}:
+						set {_code} to loop-value
+						add 1 to {_num}
+						message "{@P} %{_num}%- %{cga.apilist.names::%{_code}%}% - %{_code}%"
+		else if arg 1 is "code":
+			if arg 2 is "stats":
+				loop {cga.codelist::*}:
+					set {_first} to loop-value
+					stop loop
+				loop {cga.codelist::*}:
+					add 1 to {_num}
+					set {_code} to loop-value
+					set {_code.length} to length of {_code}
+					set {_first.length} to length of {_first}
+					if {_code.length} is greater than {_first.length}:
+						set {_first} to {_code}
+				message "{@P} CodeGenAPI Code Stats:"
+				message "{@P} There have been: %{_num}% codes made"
+				message "{@P} The longest is: %{_first}% with a length of: %length of {_first}%"
+				message "{@P} There are: %size of {cga.apilist.names::*}% scripts hooked into CodeGenAPI"
+				message "{@P} Want another stat added? Contact nfell2009 on the Skript Forums"
+			else if arg 2 is "count":
+				message "{@P} The size of the codes list is: %size of {cga.codelist::*}%"
+					
+command /codegenapi [<text>] [<text>] [<text>] [<text>] [<text>]:
+	executable by: console
+	trigger:
+		if arg 1 is "generate" or "gen" or "g":
+			if arg 2 is "key" or "k":
+				if arg 3 is not set:
+					broadcast "{@P} A Skript just tried to create an API key for CodeGenAPI, however it failed to give its name"
+				else:
+					set {_code} to ""
+					loop 100000000 times:
+						loop 6 times:
+							set {_type} to a rounded random integer between 1 and 10
+							if {_type} is equal to 1 or 3 or 5 or 7 or 9:
+								set {_rand} to a rounded random integer between 27 and {cga.max}
+								set {_char} to {cga.list::%{_rand}%}
+							else:
+								set {_rand} to a rounded random integer between 1 and 26
+								set {_char} to {cga.list::%{_rand}%}
+							set {_code} to "%{_code}%%{_char}%"
+						if {cga.codelist::%{_code}%} is not set:
+							set {cga.codelist::%{_code}%} to {_code}
+							set {cga.apilist.names::%{_code}%} to arg 3
+							set {cga.apilist.codes::%{_code}%} to {_code}
+							set {cga.%arg 3%.code} to {_code}
+							exit			
+			else if arg 2 is "code" or "c":
+				set {_key} to arg 3
+				if arg 3 is not set:
+					broadcast "{@P} A Skript tried to generate a code with CodeGenAPI, but failed to supply its API Key"
+				else if {cga.codelist::%{_key}%} is not set:
+					broadcast "{@P} A Skript tried to generate a code with CodeGenAPI, but the API Key given doesn't exist"
+				else if {cga.codelist::%{_key}%} is set:
+					set {_code} to ""
+					if arg 4 is set:
+						if arg 5 is not set:
+							loop 100000000 times:
+								loop 6 times:
+									set {_type} to a rounded random integer between 1 and 10
+									if {_type} is equal to 1 or 3 or 5 or 7 or 9:
+										set {_rand} to a rounded random integer between 27 and {cga.max}
+										set {_char} to {cga.list::%{_rand}%}
+									else:
+										set {_rand} to a rounded random integer between 1 and 26
+										set {_char} to {cga.list::%{_rand}%}
+									set {_code} to "%{_code}%%{_char}%"
+								if {cga.codelist::%{_code}%} is not set:
+									set {cga.codelist::%{_code}%} to {_code}
+									set {cga.%arg 3%.%arg 4%.code} to {_code}
+									exit
+						else:
+							set {_times} to arg 5 parsed as integer
+							loop 100000000 times:
+								loop {_times} times:
+									set {_type} to a rounded random integer between 1 and 10
+									if {_type} is equal to 1 or 3 or 5 or 7 or 9:
+										set {_rand} to a rounded random integer between 27 and {cga.max}
+										set {_char} to {cga.list::%{_rand}%}
+									else:
+										set {_rand} to a rounded random integer between 1 and 26
+										set {_char} to {cga.list::%{_rand}%}
+									set {_code} to "%{_code}%%{_char}%"
+								if {cga.codelist::%{_code}%} is not set:
+									set {cga.codelist::%{_code}%} to {_code}
+									set {cga.%arg 3%.%arg 4%.code} to {_code}
+									exit
+					else:
+						broadcast "{@P} A Skript tried to generate a code with CodeGenAPI, but failed to give a unique identifier"
+				else:
+					set {_code} to "&c[ERROR] CodeGenAPI failed to get the API key so couldn't create a code..."
