@@ -1,0 +1,81 @@
+Hi!
+
+After a lot of work, I have finally finished my game. It's called Climber. The way the game is played it by setting up maps (explained below), users right click the signs (explained below) and then are taken into an arena. A player is chosen from random and then teleported into the main part of it. Diamond blocks fall onto them and they must use this to climb up to a certain height (explained below).
+
+== Setting Up Maps ==
+
+To create a map the following steps must be done:\\
+Creating the actual map name:
+* /cl a createmap <name>
+This is used on the signs and in the other commands
+
+The following commands set locations using: location of player
+
+Setting the spawn of that map:
+* /cl a setspawn <name>
+When a player joins/wins that game, they'll be teleported ehre
+
+Setting the height:
+* /cl a setheight <name>
+This uses the Y Axis of the location. Once the player reaches this height then they will win
+
+Setting the arena spawn:
+* /cl a setarena <name>
+Go into where the player will actually have the blocks fall!\\
+NOTE: Only the following blocks are supported for blocks to fall:
+* Glowstone
+* Red Sand
+* Sandstone
+* Gold Block
+* Air
+* Diamond Block
+
+=== Setting Up The Lobby ===
+
+The lobby is where the user will be taken when they do /cl leave. The teleporting to lobby must be done by you. I have no currently set up the teleportation for it. But if you need me too, I can.
+
+To set the lobby location do:
+* /cl a setlobby
+This also uses player location
+
+For signs you use this format:
+|=Line|=Input|=Output|=Description|
+|1|cl|[CLIMBER]|This is used for the right click, to check its a climber sign|
+|2|<Map name>|Map Name|The map in which the player is joining|
+|3|{BLANK}|0/10|Players in the game and total slots, default is 10|
+|4|{BLANK}|Open Game|Changes to "Full Game" if there is 10/10 people in it|
+
+=== Commands and Permissions ===
+
+The user permission is: climber.usage\\
+The admin permission is: climber.admin\\
+These are set in the options menu at the top
+
+User commands - all require: climber.usage:
+* /cl - Main command
+* /cl about - About climber
+* /cl leave - Leave the game the player is in
+
+Admin commands - all require: climber.admin:
+* /cl a - Main admin command
+* /cl a maplist - Shows all the maps and number of players in them
+* /cl a aview - Views attempted signs log (More for other servers)
+* /cl a aclear - Clears the attempted signs log (More for other servers)
+* /cl a arestore - Restores the attempted signs log (More for other servers)
+* /cl a createmap <name> - Creates a map
+* /cl a setspawn <name> - Sets the spawn of a map
+* /cl a setheight <name> - Sets the height of a map
+* /cl a setarena <name> - Sets arena spawn of a map
+* /cl a setlobby - Sets the lobby spawn
+
+=== Download ===
+
+Attactched
+
+=== Notes ===
+
+There was a problem with the variables.csv file being spammed to death... (One time it got to 2.34GB) - I think I have successfully removed it, as I believe it was a while loop causing this problem. Also I only managed to test with 2 people, so I recommend you test this with more... sorry, I do have more accounts I could have used, but my computer becomes really slow, and my local server isn't too fast.
+
+Also, if you can't understand the map creation system, just ask and I'll help. If I release this as a public script, then I will probably rework it to be more simple.
+
+Thanks! And any comments, questions or queries please just say! :)
