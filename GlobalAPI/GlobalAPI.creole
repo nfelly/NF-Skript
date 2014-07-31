@@ -53,7 +53,7 @@ V1.0
 
 === Downloads and extra info! ===
 
-To down GlobalAPI please click the link: [LINK]
+To download GlobalAPI you will find it attatched to the dev.bukkit.org post (LINK TO IT) or you can copy and paste it from here: http://bit.ly/1koRmsm
 
 This script requires skQuery 3.5.0:
 
@@ -67,4 +67,4 @@ This script is compliant with the Standard Skript Code Conventions:
 
 === GitHub === 
 
-* [LINK]
+* http://bit.ly/1koRmsm - V1.0
