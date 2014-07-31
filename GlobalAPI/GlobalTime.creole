@@ -1,0 +1,42 @@
+== GlobalTime ==
+
+GlobalTime lets you get the time of any timezone around the world!
+
+=== Usage ===
+
+GlobalTime has a really easy to use API allowing you to just get the timezone in seconds!
+
+{{{
+command /time-check <text>:
+	permission: globaltime.usage
+	trigger:
+		if arg 1 is set:
+			execute console command "/global-time-console %arg 1%"                # Running API search
+			if {gbt::timezones::%arg 1%::time} is not set:                        # Checking for valid return
+				message "&aInvalid timezone!"
+			else:
+				message "&aTime for: %arg 1% is: %{gbt::timezones::%arg 1%::time}%" # Returning the time of the timezone
+}}}
+arg 1 in that command is the timezone
+
+=== How it works ===
+
+I have created a PHP side in which connects to an external websites API to get the time. The PHP side then does a little magic and removes the unneeded text and calculatets the time in that timezone.
+
+=== Commands ===
+
+This command is only executable by console:
+
+*/global-time-console <timezone> - This command will get the time of the timezone
+
+=== Planned Features ===
+
+None! Suggest something!
+
+=== Known Bugs ===
+
+None that I know of
+
+=== Downloads and extra info! ===
+
+This script is included in GlobalAPI.sk - http://bit.ly/1k9vP6w
