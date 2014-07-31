@@ -1,0 +1,57 @@
+== QueryAPI ==
+
+Ever wanted to get the player count of another server? The MOTD? Max slots? Well QueryAPI allows you to do that with just 1 command and a variable (or two...)!
+
+=== Usage ===
+
+There is 1 command, 1 method, 1 sub-command... basically, 1 way to do this!
+
+{{{
+if arg 1 is set:
+	execute console command "/query-api-console server-info-live all %arg 1%"             
+	# Performs a check on the API for that server
+	
+	message "Player count for: %arg 1% is: %{qua::server-info::%arg 1%::connected}%"      
+	# Returns the number of players connected
+}}}
+
+Useable Hooks For QueryAPI:
+motd = The MOTD of the server (Not 100% where it gets it from...)
+hostpost = Port of the server
+hostip = IP of the server
+gametype = Not sure what this is... I've only seen SMP return
+gameid = Not sure what this is either... I've only seen MINECRAFT
+version = Version =/= Software, I have no clue. Returns Minecraft version
+map = Main map of the server
+connected = Number of players connected
+maxplayers = Number of slots
+online = If the server is up or down
+software = The server jar you're using
+
+To use any hook just call the this variable back after running the API command:
+
+}}}
+	{qua::server-info::<IP OF SERVER MUST STAY THE SAME!>::<API-HOOK AS ITS SHOWN!>}
+}}}
+
+=== How it works ===
+
+For this part of GlobalAPI I have created a fancy PHP side that will get all the information about a Minecraft server, while GlobalAPI then 'decodes' the return format (My own format <3).
+
+=== Commands ===
+
+There is only 1 command for QueryAPI and its only executable by console!
+
+* /query-api-console server-info-live all <IP of the server> - This performs an update to the server's info.
+
+=== Planned Features ===
+
+* Single API updates
+
+=== Known Bugs ===
+
+None that I know of!
+
+=== Downloads and extra info! ===
+
+This script is included in GlobalAPI.sk - http://bit.ly/1k9vP6w
