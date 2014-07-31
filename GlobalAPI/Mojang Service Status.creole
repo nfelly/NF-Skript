@@ -1,0 +1,41 @@
+=== Mojang Service Status [MSS] ===
+
+Mojang Service Status (I will refer as MSS) checks Mojangs server status every 1 minute (configurable) and if any of Mojangs services are offline/unstable it will be broadcasted. I did make this script before, however, it required a PHP side to be set up correctly and it was something I couldn't get working properly so I stopped work on it - but recently, I figured out how to do without the PHP page
+
+=== Usage ===
+
+To use MSS all you need to do is install it and configure a time you like it to check, please remember, having a shorter time can result in server lag as an increase in requests.
+
+Commands:
+
+/mss - Main command. To run this (and any command below) requires mss.usage plus any additional perms when required
+/mss help - Lists commands
+/mss down broadcast - Broadcasts any down services (requires mss.admin)
+/mss down tell - Tells the player who ran the command any down services
+/mss status broadcast - Broadcasts the status of all services (requires mss.admin)
+/mss status tell - Tells the player who the ran the command the status of all the services
+/mss single broadcast <service> - Broadcasts the status of a single service
+/mss single tell <service> - Tells the player the status of a single service
+How it works
+
+Mojang have a page which returns a value in JSON of all their service status. This script harnesses that and does some splitting, replacing and checking to give the final values
+
+Uses?
+
+Players sometimes don't know when a service is down, with MSS you will be able to have an alert put out to your players saying which service(s) are down.
+
+=== API Usage ===
+
+I want to keep this post clean, so I have put the API usage on a GitHub wiki page: http://bit.ly/1qojJVi
+
+=== Planned Features ===
+
+Nothing! Suggest something!
+
+=== Known Bugs ===
+
+None!
+
+=== Downloads and extra info! ===
+
+This script is included in GlobalAPI.sk - http://bit.ly/1k9vP6w
