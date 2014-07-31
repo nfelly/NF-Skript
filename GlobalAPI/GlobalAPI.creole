@@ -5,10 +5,10 @@ GlobalAPI provides the latest API tools for Skript to give you a lot of nice lit
 === Usage ===
 
 GlobalAPI is split into 4 different API's which have different abilities! To keep this thread tidy, and the forums less spammy, I have put their pages onto a seperate GitHub page:
-* GlobalTime - Allows you to get the time of any timezone in the world - 
-* QueryAPI - Get the information of a Minecraft server -
-* Mojang Service Status (MMS) - Check which Mojang services are online/offline - 
-* HasPaid API - When a player joins they're checked to see if they've paid - 
+* GlobalTime - Allows you to get the time of any timezone in the world - http://bit.ly/1nNRGk4
+* QueryAPI - Get the information of a Minecraft server - http://bit.ly/UDGQ4k
+* Mojang Service Status (MMS) - Check which Mojang services are online/offline - http://bit.ly/1nNWtBV
+* HasPaid API - When a player joins they're checked to see if they've paid - http://bit.ly/1nX0u8l
 
 === How it works ===
 
