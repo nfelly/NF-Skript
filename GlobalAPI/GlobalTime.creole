@@ -7,15 +7,12 @@ GlobalTime lets you get the time of any timezone around the world!
 GlobalTime has a really easy to use API allowing you to just get the timezone in seconds!
 
 {{{
-command /time-check <text>:
-	permission: globaltime.usage
-	trigger:
-		if arg 1 is set:
-			execute console command "/global-time-console %arg 1%"                # Running API search
-			if {gbt::timezones::%arg 1%::time} is not set:                        # Checking for valid return
-				message "&aInvalid timezone!"
-			else:
-				message "&aTime for: %arg 1% is: %{gbt::timezones::%arg 1%::time}%" # Returning the time of the timezone
+if arg 1 is set:
+	execute console command "/global-time-console %arg 1%"                # Running API search
+	if {gbt::timezones::%arg 1%::time} is not set:                        # Checking for valid return
+		message "&aInvalid timezone!"
+	else:
+		message "&aTime for: %arg 1% is: %{gbt::timezones::%arg 1%::time}%" # Returning the time of the timezone
 }}}
 arg 1 in that command is the timezone
 
