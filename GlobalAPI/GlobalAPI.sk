@@ -1,0 +1,336 @@
+#   ____        _   _                 
+#  / __ \      | | (_)                
+# | |  | |_ __ | |_ _  ___  _ __  ___ 
+# | |  | | '_ \| __| |/ _ \| '_ \/ __|
+# | |__| | |_) | |_| | (_) | | | \__ \
+#  \____/| .__/ \__|_|\___/|_| |_|___/
+#        | |                          
+#        |_|                          
+
+options:
+	P: &8[&aMSS&8]&a
+	Check-Time: 60
+
+#   _____ _       _           _ _______ _                
+#  / ____| |     | |         | |__   __(_)               
+# | |  __| | ___ | |__   __ _| |  | |   _ _ __ ___   ___ 
+# | | |_ | |/ _ \| '_ \ / _` | |  | |  | | '_ ` _ \ / _ \
+# | |__| | | (_) | |_) | (_| | |  | |  | | | | | | |  __/
+#  \_____|_|\___/|_.__/ \__,_|_|  |_|  |_|_| |_| |_|\___|
+
+command /global-time-console <text>:
+	executable by: console
+	trigger:
+		if arg 1 is set:
+			set {gbt::timezones::%arg 1%::time} to text from "http://quft.co.uk/skript/time-check.php?timezone=%arg 1%"                                        
+                                                             
+command /time-check <text>:
+	permission: globaltime.usage
+	trigger:
+		if arg 1 is set:
+			execute console command "/global-time-console %arg 1%"
+			if {gbt::timezones::%arg 1%::time} is not set:
+				message "&aInvalid timezone!"
+			else:
+				message "&aTime for: %arg 1% is: %{gbt::timezones::%arg 1%::time}%"
+
+#   ____                                   _____ _____ 
+#  / __ \                           /\   |  __ \_   _|
+# | |  | |_   _  ___ _ __ _   _    /  \  | |__) || |  
+# | |  | | | | |/ _ \ '__| | | |  / /\ \ |  ___/ | |  
+# | |__| | |_| |  __/ |  | |_| | / ____ \| |    _| |_ 
+#  \___\_\\__,_|\___|_|   \__, |/_/    \_\_|   |_____|
+#                          __/ |                       
+#                         |___/                        
+# = # = # = # = # = #
+#                   #
+# EXAMPLE API USAGE #
+#                   #
+# = # = # = # = # = #
+#
+#	command /player-count <text>:
+#		trigger:
+#			if arg 1 is set:
+#				execute console command "/query-api-console server-info-live all %arg 1%"             # Performs a check on the API for that server
+#				message "Player count for: %arg 1% is: %{qua::server-info::%arg 1%::connected}%"      # Returns the number of players connected
+#
+#	command /online-mode <text>:
+#		trigger:
+#			if arg 1 is set:
+#				execute console command "/query-api-console server-info-live all %arg 1%"             # Performs a check on the API for that server
+#				message "Online mode for: %arg 1% is: %{qua::server-info::%arg 1%::online}%"          # Returns the online mode (online|offline)
+#
+#	Useable Hooks For QueryAPI:
+#	motd = The MOTD of the server (Not 100% where it gets it from...)
+#	hostpost = Port of the server
+#	hostip = IP of the server
+#	gametype = Not sure what this is... I've only seen SMP return
+#	gameid = Not sure what this is either... I've only seen MINECRAFT
+#	version = Version =/= Software, I have no clue. Returns Minecraft version
+#	map = Main map of the server
+#	connected = Number of players connected
+#	maxplayers = Number of slots
+#	online = If the server is up or down
+#	software = The server jar you're using
+
+command /query-api-console <text> [<text>] [<text>]:
+	executable by: console
+	trigger:
+		if arg 1 is "server-info-live":
+			if arg 3 is set:
+				if arg 2 is "all":
+					set {_check} to text from "http://quft.co.uk/skript/all.php?connection=%arg 3%"
+					set {qua::server-info::%arg 3%} to arg 3
+					set {qua::server-info::%arg 3%::local} to {_check}
+					set {_split::*} to {_check} split at ","
+					loop {_split::*}:
+						add 1 to {_num}
+						replace all "[" and "]" and "{" and "}" in {_split::%{_num}%} with ""
+						set {_line-split::*} to {_split::%{_num}%} split at ":"
+						if {_line-split::1} is "online":
+							if {_line-split::2} is "1":
+								set {_line-split::2} to "online"
+							else:
+								set {_line-split::2} to "offline"
+						set {qua::server-info::%arg 3%::%{_line-split::1}%} to {_line-split::2}
+#  __  __       _                      _____                 _             _____ _        _             
+# |  \/  |     (_)                    / ____|               (_)           / ____| |      | |            
+# | \  / | ___  _  __ _ _ __   __ _  | (___   ___ _ ____   ___  ___ ___  | (___ | |_ __ _| |_ _   _ ___ 
+# | |\/| |/ _ \| |/ _` | '_ \ / _` |  \___ \ / _ \ '__\ \ / / |/ __/ _ \  \___ \| __/ _` | __| | | / __|
+# | |  | | (_) | | (_| | | | | (_| |  ____) |  __/ |   \ V /| | (_|  __/  ____) | || (_| | |_| |_| \__ \
+# |_|  |_|\___/| |\__,_|_| |_|\__, | |_____/ \___|_|    \_/ |_|\___\___| |_____/ \__\__,_|\__|\__,_|___/
+#             _/ |             __/ |                                                                    
+#            |__/             |___/                                                                     
+
+
+# = # = # = # = # = #
+#                   #
+# EXAMPLE API USAGE #
+#                   #
+# = # = # = # = # = #
+#
+#	on script load:
+#		set {example::other::time-check} to {mss::other::time-check} / 2 #Setting the time to check MSS's API every half the time it updates.
+#
+#	every {example::other::time-check} seconds: #Doing a check on the API
+#		if {mss::api-down::minecraft.net} is "offline": #Checking if minecraft.net is down
+#			#Do stuff
+#
+#	command /test-down:
+#		executable by: console
+# 		trigger:
+#			execute console command "/mss-console-check down-api-hook" #Performing an update to the API
+#			if {mss::api-down::minecraft.net} is "offline": #Checking Minecraft.net's status
+#				#Do stuff
+#
+#	command /test-status:
+#		trigger:
+#			execute console command "/mss-console-check status-api-hook" #Performing an update to the API
+#			broadcast "%{mss::api-status::minecraft.net}%" #Broadcasting the status of Minecraft.net
+#
+#	command /test-single <text>:
+#		trigger:
+#			execute console command "/mss-console-check single-api-hook %arg 1%"
+#			broadcast "%{mss::api-single::%arg 1%}%"
+#
+#	Services that can be checked:
+#	minecraft.net = website
+#	login.minecraft.net = old login service
+#	session.minecraft.net = multiplayer authentication
+#	account.mojang.com = mojang account system
+#	auth.mojang.com = Yggdrassil login service
+#	skins.minecraft.net = Skins service
+#
+#	Return Status (List of the status types that get returned):
+#	online
+#	unstable
+#	offline
+
+command /mojang-service-status [<text>] [<text>] [<text>]:
+	permission: mss.usage
+	aliases: /mss,
+	trigger:
+		if arg 1 is not set:
+			message "{@P} You must provide a sub-command"
+		else if arg 1 is "down":
+			if arg 2 is "broadcast":
+				if player has permission "mss.admin":
+					execute console command "/mss-console-check broadcast"
+				else:
+					message "{@P} You don't have permission to do that"
+			else if arg 2 is "tell":
+				execute console command "/mss-console-check tell %player%"
+			else:
+				message "{@P} Invalid arguments"
+		else if arg 1 is "status":
+			if arg 2 is "broadcast":
+				if player has permission "mss.admin":
+					execute console command "/mss-console-check broadcast-status"
+			else if arg 2 is "tell":
+				execute console command "/mss-console-check tell-status %player%"
+			else:
+				message "{@P} Invalid arguments"
+		else if arg 1 is "single":
+			if {mss::service::list::%arg 3%} is true:
+				if arg 2 is "broadcast":
+					execute console command "/mss-console-check single-api-hook %arg 3%"
+					broadcast "{@P} Status of: %arg 3% - %{mss::api-single::%arg 3%}%"
+				else if arg 2 is "tell":
+					execute console command "/mss-console-check single-api-hook %arg 3%"
+					message "{@P} Status of: %arg 3% - %{mss::api-single::%arg 3%}%"
+				else:
+					message "{@P} Invalid arguments"
+		else:
+			message "{@P} Invalid arguments"
+
+command /mss-console-check <text> [<text>]:
+	executable by: console
+	trigger:
+		set {_check} to text from "http://status.mojang.com/check"
+		replace all "green" in {_check} with "online"
+		replace all "amber" in {_check} with "unstable"
+		replace all "red" in {_check} with "offline"
+		if arg 1 is "auto-broadcast":
+			set {_split::*} to {_check} split at ","
+			loop {_split::*}:
+				add 1 to {_num}
+				replace all "[" and "]" and """" and "{" and "}" in {_split::%{_num}%} with ""
+				set {_line-split::*} to {_split::%{_num}%} split at ":"
+				if {_line-split::2} is "offline":
+					set {_mss.down} to true
+					add "%{_line-split::1}%" to {_down-list::*}
+			if {_mss.down} is true:
+				broadcast "{@P} %{_down-list::*}% are currently down! This may affect trying to connect to the server and some gameplay features"
+		else if arg 1 is "single-api-hook":
+			if arg 2 is set:
+				if {mss::service::list::%arg 2%} is true:
+					set {_check} to text from "http://status.mojang.com/check?service=%arg 2%"
+					replace all "green" in {_check} with "online"
+					replace all "amber" in {_check} with "unstable"
+					replace all "red" in {_check} with "offline"
+					replace all "{" and "}" and """" in {_check} with ""
+					set {_line-split::*} to {_check} split at ":"
+					set {mss::api-single::%{_line-split::1}%} to {_line-split::2}
+		else if arg 1 is "down-api-hook":
+			if arg 2 is set:
+				set {_split::*} to {_check} split at ","
+				loop {_split::*}:
+					add 1 to {_num}
+					replace all "[" and "]" and """" and "{" and "}" in {_split::%{_num}%} with ""
+					set {_line-split::*} to {_split::%{_num}%} split at ":"
+					if {_line-split::2} is "offline":
+						set {mss::api-down::%{_line-split::1}%} to {_line-split::2}
+		else if arg 1 is "status-api-hook":
+			set {_split::*} to {_check} split at ","
+			loop {_split::*}:
+				add 1 to {_num}
+				replace all "[" and "]" and """" and "{" and "}" in {_split::%{_num}%} with ""
+				set {_line-split::*} to {_split::%{_num}%} split at ":"
+				set {mss::api-status::%{_line-split::1}%} to {_line-split::2}
+		else if arg 1 is "broadcast":
+			set {_split::*} to {_check} split at ","
+			loop {_split::*}:
+				add 1 to {_num}
+				replace all "[" and "]" and """" and "{" and "}" in {_split::%{_num}%} with ""
+				set {_line-split::*} to {_split::%{_num}%} split at ":"
+				if {_line-split::2} is "offline":
+					set {_mss.down} to true
+					add "%{_line-split::1}%" to {_down-list::*}
+			if {_mss.down} is true:
+				broadcast "{@P} %{_down-list::*}% are currently down! This may affect trying to connect to the server and some gameplay features"
+			else:
+				broadcast "{@P} All Mojang services seem to be running fine"
+		else if arg 1 is "tell":
+			if arg 2 is set:
+				set {_p} to arg 2 parsed as player
+				set {_split::*} to {_check} split at ","
+				loop {_split::*}:
+					add 1 to {_num}
+					replace all "[" and "]" and """" and "{" and "}" in {_split::%{_num}%} with ""
+					set {_line-split::*} to {_split::%{_num}%} split at ":"
+					if {_line-split::2} is "offline":
+						set {_mss.down} to true
+						add "%{_line-split::1}%" to {_down-list::*}
+				if {_mss.down} is true:
+					send "{@P} %{_down-list::*}% are currently down! This may affect trying to connect to the server and some gameplay features" to {_p}
+				else:
+					send "{@P} All Mojang services seem to be running fine" to {_p}
+		else if arg 1 is "broadcast-status":
+			broadcast "{@P} Checking status..."
+			set {_split::*} to {_check} split at ","
+			loop {_split::*}:
+				add 1 to {_num}
+				replace all "[" and "]" and """" and "{" and "}" in {_split::%{_num}%} with ""
+				replace all ":" in {_split::%{_num}%} with " - "
+				broadcast "{@P} %{_split::%{_num}%}%"
+		else if arg 1 is "tell-status":
+			set {_p} to arg 2 parsed as player
+			send "{@P} Checking status..." to {_p}
+			set {_split::*} to {_check} split at ","
+			loop {_split::*}:
+				add 1 to {_num}
+				replace all "[" and "]" and """" and "{" and "}" in {_split::%{_num}%} with ""
+				replace all ":" in {_split::%{_num}%} with " - "
+				send "{@P} %{_split::%{_num}%}%" to {_p}
+
+#  _                     _     ___    _       _                 _ 
+# | |                   | |   / / |  | |     | |               | |
+# | |     ___   __ _  __| |  / /| |  | |_ __ | | ___   __ _  __| |
+# | |    / _ \ / _` |/ _` | / / | |  | | '_ \| |/ _ \ / _` |/ _` |
+# | |___| (_) | (_| | (_| |/ /  | |__| | | | | | (_) | (_| | (_| |
+# |______\___/ \__,_|\__,_/_/    \____/|_| |_|_|\___/ \__,_|\__,_|
+                                                                 
+
+
+on script load:
+	set {mss::other::time-check} to "{@Check-Time}" parsed as timespan
+
+	# Changing anything below may break other scripts accessing the GlobalAPI
+	set {mss::running} to true
+	set {mss::service::list::minecraft.net} to true
+	set {mss::service::list::login.minecraft.net} to true
+	set {mss::service::list::session.minecraft.net} to true
+	set {mss::service::list::account.mojang.com} to true
+	set {mss::service::list::auth.mojang.com} to true
+	set {mss::service::list::skins.minecraft.net} to true
+	set {mss::service::list::authserver.mojang.com} to true
+
+	set {gbt::running} to true
+
+on script unload:
+	# Changing anything below may break other scripts accessing the GlobalAPI
+	set {mss::running} to false
+	set {mss::service::list::minecraft.net} to false
+	set {mss::service::list::login.minecraft.net} to false
+	set {mss::service::list::session.minecraft.net} to false
+	set {mss::service::list::account.mojang.com} to false
+	set {mss::service::list::auth.mojang.com} to false
+	set {mss::service::list::skins.minecraft.net} to false
+	set {mss::service::list::authserver.mojang.com} to false
+
+	set {gbt::running} to false
+
+#  _______ _                    _   ______               _       
+# |__   __(_)                  | | |  ____|             | |      
+#    | |   _ _ __ ___   ___  __| | | |____   _____ _ __ | |_ ___ 
+#    | |  | | '_ ` _ \ / _ \/ _` | |  __\ \ / / _ \ '_ \| __/ __|
+#    | |  | | | | | | |  __/ (_| | | |___\ V /  __/ | | | |_\__ \
+#    |_|  |_|_| |_| |_|\___|\__,_| |______\_/ \___|_| |_|\__|___/
+                                                                
+                                                                
+every {@Check-Time} seconds:
+	execute console command "/mss-console-checks auto-broadcast"
+	execute console command "/mss-console-checks down-api-hook"
+	execute console command "/mss-console-checks status-api-hook"
+
+ # _    _           _____      _     _            _____ _____ 
+ #| |  | |         |  __ \    (_)   | |     /\   |  __ \_   _|
+ #| |__| | __ _ ___| |__) |_ _ _  __| |    /  \  | |__) || |  
+ #|  __  |/ _` / __|  ___/ _` | |/ _` |   / /\ \ |  ___/ | |  
+ #| |  | | (_| \__ \ |  | (_| | | (_| |  / ____ \| |    _| |_ 
+ #|_|  |_|\__,_|___/_|   \__,_|_|\__,_| /_/    \_\_|   |_____|
+
+# Pretty basic... I know, not much to include
+
+on connect:
+	set {hpa::list::%player%} to text from "https://minecraft.net/haspaid.jsp?user=%player%"
