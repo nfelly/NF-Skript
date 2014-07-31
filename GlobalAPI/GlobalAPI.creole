@@ -1,0 +1,70 @@
+== GlobalAPI ==
+
+GlobalAPI provides the latest API tools for Skript to give you a lot of nice little features which addons haven't provided or are impossible without some sort of external interface.
+
+=== Usage ===
+
+GlobalAPI is split into 4 different API's which have different abilities! To keep this thread tidy, and the forums less spammy, I have put their pages onto a seperate GitHub page:
+* GlobalTime - Allows you to get the time of any timezone in the world - 
+* QueryAPI - Get the information of a Minecraft server -
+* Mojang Service Status (MMS) - Check which Mojang services are online/offline - 
+* HasPaid API - When a player joins they're checked to see if they've paid - 
+
+=== How it works ===
+
+GlobalAPI uses features such as skQuery's 'text from "%url%"' to provide the HasPaid API and the MSS API, however for features like GlobalTime and QueryAPI I have created a PHP side in which allows GlobalAPI to do them extra features.
+
+=== Uses? ===
+
+As there are so many features existing in GlobalAPI, there are a lot of uses! I have listed a few below:\\
+GlobalTime:
+* Live clocks
+* Server time
+
+QueryAPI:
+* Check the status of Minecraft servers on a Bungee
+* In-Game stats
+
+MMS:
+* Warn users when Mojang Services are offline
+* Check status of the services in-game
+
+HasPaid API
+* Prevent premium users joining cracked servers
+* Check if a cracked user is premium
+
+=== Planned Features ===
+
+None! Suggest something!
+
+=== Known Bugs ===
+
+None that I know off...
+
+=== Changelog ===
+
+*+ = Something added
+*- = Something removed
+*~ = Comment
+
+V1.0
+* + Release
+
+
+=== Downloads and extra info! ===
+
+To down GlobalAPI please click the link: [LINK]
+
+This script requires skQuery 3.5.0:
+
+[[http://dev.bukkit.org/bukkit-plugins/skquery/|{{http://i.imgur.com/ssLXGkU.png|Requires skQuery}}]]
+
+This script is compliant with the Standard Skript Code Conventions:
+
+[[http://dev.bukkit.org/bukkit-plugins/skript/forum/tutorials/69108/|{{http://i.imgur.com/BZ8lAno.png|SSCC Compliant}}]]
+
+=== Current Version: 1.0 ===
+
+=== GitHub === 
+
+* [LINK]
