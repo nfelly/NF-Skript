@@ -1,0 +1,29 @@
+== HasPaid API ==
+
+The HasPaid API checks the users account when they join to see if its a paid account or not
+
+=== Usage ===
+
+Very simple usage, just check a variable:
+
+{{{
+	{hpa::list::%player%}
+}}}
+
+The value is either true or false
+
+=== How it works ===
+
+Using the Minecraft haspaid page this part of the API just checks that.
+
+=== Planned Features ===
+
+Nothing! Suggest something!
+
+=== Known Bugs ===
+
+None I know of!
+
+=== Downloads and extra info! ===
+
+This script is included in GlobalAPI.sk - http://bit.ly/1k9vP6w
