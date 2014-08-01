@@ -8,7 +8,7 @@
 #        |_|                          
 
 options:
-	P: &8[&aMSS&8]&a
+	P: &8[&aGlobalAPI&8]&a
 	Check-Time: 60
 
 #   _____ _       _           _ _______ _                
@@ -17,22 +17,126 @@ options:
 # | | |_ | |/ _ \| '_ \ / _` | |  | |  | | '_ ` _ \ / _ \
 # | |__| | | (_) | |_) | (_| | |  | |  | | | | | | |  __/
 #  \_____|_|\___/|_.__/ \__,_|_|  |_|  |_|_| |_| |_|\___|
+#
+#command /time-check <text>:
+#	permission: globaltime.usage
+#	trigger:
+#		if arg 1 is set:
+#			execute console command "/global-time-console %arg 1%"
+#			if {gbt::timezones::%arg 1%::time} is not set:
+#				message "&aInvalid timezone!"
+#			else:
+#				message "&aTime for: %arg 1% is: %{gbt::timezones::%arg 1%::time}%"
 
 command /global-time-console <text>:
 	executable by: console
 	trigger:
 		if arg 1 is set:
-			set {gbt::timezones::%arg 1%::time} to text from "http://quft.co.uk/skript/time-check.php?timezone=%arg 1%"                                        
-                                                             
-command /time-check <text>:
-	permission: globaltime.usage
+			set {gbt::timezones::%arg 1%::time} to text from "http://quft.co.uk/skript/time-check.php?timezone=%arg 1%"
+
+#  _    _ _____  _               _____ _____ 
+# | |  | |  __ \| |        /\   |  __ \_   _|
+# | |  | | |__) | |       /  \  | |__) || |  
+# | |  | |  _  /| |      / /\ \ |  ___/ | |  
+# | |__| | | \ \| |____ / ____ \| |    _| |_ 
+#  \____/|_|  \_\______/_/    \_\_|   |_____|
+#
+# = # = # = # = # = #
+#                   #
+# EXAMPLE API USAGE #
+#                   #
+# = # = # = # = # = #
+#
+#	command /shorten <text> <text>:
+#		trigger:
+#			execute console command "/url-shortener-console %arg 1% %arg 2%"
+#			message "Your shortened URL: %{url::api::short::%arg 2%}%"
+                                            
+command /url-shortener-console <text> <text>:
+	executable by: console
 	trigger:
 		if arg 1 is set:
-			execute console command "/global-time-console %arg 1%"
-			if {gbt::timezones::%arg 1%::time} is not set:
-				message "&aInvalid timezone!"
+			if arg 2 is set:
+				set {_url} to text from "http://quft.co.uk/skript/shorturl.php?type=%arg 1%&url=%arg 2%"
+				set {_u::*} to {_url} split at " "
+				set {url::api::short::%arg 2%} to {_u::1}
+
+command /urlapi <text> <text>:
+	permission: urlapi.admin
+	trigger:
+		if arg 1 is "types":
+			message "{@P} List of types:"
+			set {url::api::list-of-types} to text from "http://quft.co.uk/skript/shorturl.txt"
+			set {url::api::list-of-types::list::*} to {url::api::list-of-types} split at "-"
+			loop {url::api::list-of-types::list::*}:
+				message "{@P} %loop-value%"
+#  ______ _              _  _____ _           _   
+# |  ____(_)            | |/ ____| |         | |  
+# | |__   ___  _____  __| | |    | |__   __ _| |_ 
+# |  __| | \ \/ / _ \/ _` | |    | '_ \ / _` | __|
+# | |    | |>  <  __/ (_| | |____| | | | (_| | |_ 
+# |_|    |_/_/\_\___|\__,_|\_____|_| |_|\__,_|\__|
+#
+# __          __     _____  _   _ _____ _   _  _____             
+# \ \        / /\   |  __ \| \ | |_   _| \ | |/ ____|          
+#  \ \  /\  / /  \  | |__) |  \| | | | |  \| | |  __          
+#   \ \/  \/ / /\ \ |  _  /| . ` | | | | . ` | | |_ |            
+#    \  /\  / ____ \| | \ \| |\  |_| |_| |\  | |__| |           
+#     \/  \/_/    \_\_|  \_\_| \_|_____|_| \_|\_____|          
+#  ______                      _                      _        _ 
+# |  ____|                    (_)                    | |      | |
+# | |__  __  ___ __   ___ _ __ _ _ __ ___   ___ _ __ | |_ __ _| |
+# |  __| \ \/ / '_ \ / _ \ '__| | '_ ` _ \ / _ \ '_ \| __/ _` | |
+# | |____ >  <| |_) |  __/ |  | | | | | | |  __/ | | | || (_| | |
+# |______/_/\_\ .__/ \___|_|  |_|_| |_| |_|\___|_| |_|\__\__,_|_|
+#             | |                                                
+#             |_|                                                                                               
+                                                 
+
+
+command /fixed-chat [<text>] [<text>]:
+	permission: fixedchat.admin
+	trigger:
+		if arg 1 is "start":
+			if {fcm::setting::message::*} is empty:
+				add "&a&lFixed Chat Message" to {fcm::setting::messages::*}
+			set {fcm::setting::mode} to true
+			broadcast "{@P} Starting fixed chat"
+		else if arg 1 is "end":
+			set {fcm::setting::mode} to false
+			broadcast "{@P} Ending fixed chat"
+			delete {fcm::chat-list::*}
+			loop {fcm::chat-list::*}:
+				broadcast "%coloured loop-value%"
+		else if arg 1 is "second-start":
+			set {fcm::setting::second-start} to true
+			message "{@P} Enabled every second updates"
+		else if arg 1 is "second-end":
+			set {fcm::setting::second-start} to false
+			message "{@P} Disabled every second updates"
+		else if arg 1 is "add":
+			add arg 2 to {fcm::setting::messages::*}
+			message "{@P} Added: %coloured arg 2% - to the messages"
+		else if arg 1 is "remove":
+			if {fcm::setting::messages::%arg 2%} is not set:
+				message "{@P} That isn't a valid number"
 			else:
-				message "&aTime for: %arg 1% is: %{gbt::timezones::%arg 1%::time}%"
+				set {_m} to {fcm::setting::messages::%arg 2%}
+				delete {fcm::setting::messages::%arg 2%}
+				loop {fcm::setting::messages::*}:
+					add loop-value to {_templist::*}
+				clear {fcm::setting::messages::*}
+				loop {_templist::*}:
+					add loop-value to {fcm::setting::messages::*}
+				message "{@P} Removed: %coloured {_m}% - from the message list"
+		else if arg 1 is "list":
+			message "{@P} List of fixed messages:"
+			loop {fcm::setting::messages::*}:
+				message "%coloured loop-value%"
+
+
+
+
 
 #   ____                                   _____ _____ 
 #  / __ \                           /\   |  __ \_   _|
@@ -323,6 +427,16 @@ every {@Check-Time} seconds:
 	execute console command "/mss-console-checks down-api-hook"
 	execute console command "/mss-console-checks status-api-hook"
 
+every 1 second:
+	if {fcm::setting::mode} is true:
+		if {fcm::setting::second-update} is true:
+			loop 1000 times:
+				broadcast "&r"
+			loop {fcm::chat-list::*}:
+				broadcast "%coloured loop-value%"
+			loop {fcm::setting::messages::*}:
+				broadcast "%coloured loop-value%"
+
  # _    _           _____      _     _            _____ _____ 
  #| |  | |         |  __ \    (_)   | |     /\   |  __ \_   _|
  #| |__| | __ _ ___| |__) |_ _ _  __| |    /  \  | |__) || |  
@@ -334,3 +448,21 @@ every {@Check-Time} seconds:
 
 on connect:
 	set {hpa::list::%player%} to text from "https://minecraft.net/haspaid.jsp?user=%player%"
+
+#   ____  _   _                 ______               _       
+#  / __ \| | | |               |  ____|             | |      
+# | |  | | |_| |__   ___ _ __  | |____   _____ _ __ | |_ ___ 
+# | |  | | __| '_ \ / _ \ '__| |  __\ \ / / _ \ '_ \| __/ __|
+# | |__| | |_| | | |  __/ |    | |___\ V /  __/ | | | |_\__ \
+#  \____/ \__|_| |_|\___|_|    |______\_/ \___|_| |_|\__|___/
+                                                            
+on chat:
+	if {fcm::setting::mode} is true:
+		cancel event
+		add "%display name of player%: %coloured message%" to {fcm::chat-list::*}
+		loop 1000 times:
+			broadcast "&r"
+		loop {fcm::chat-list::*}:
+			broadcast "%coloured loop-value%"
+		loop {fcm::setting::messages::*}:
+			broadcast "%coloured loop-value%"
