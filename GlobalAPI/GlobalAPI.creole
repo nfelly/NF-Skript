@@ -9,6 +9,8 @@ GlobalAPI is split into 4 different API's which have different abilities! To kee
 * QueryAPI - Get the information of a Minecraft server - http://bit.ly/UDGQ4k
 * Mojang Service Status (MMS) - Check which Mojang services are online/offline - http://bit.ly/1nNWtBV
 * HasPaid API - When a player joins they're checked to see if they've paid - http://bit.ly/1nX0u8l
+* URLAPI - Lets you convert long URL's into short ones - http://bit.ly/1o05MQd
+* FixedChat - Have messages always stay at the bottom of chat (Experimental) - http://bit.ly/1ohABKu
 
 === How it works ===
 
@@ -33,6 +35,14 @@ HasPaid API
 * Prevent premium users joining cracked servers
 * Check if a cracked user is premium
 
+URLAPI
+* Shorten in-game URLs
+* Create a script to automatically do it
+
+FixedChat
+* Create a cool bottom part of the chat
+* Just a cool feature :3
+
 === Planned Features ===
 
 None! Suggest something!
@@ -46,6 +56,10 @@ None that I know off...
 *+ = Something added
 *- = Something removed
 *~ = Comment
+
+1.1
+* + Added URLAPI
+* + Added FixChat (Experimental)
 
 V1.0
 * + Release
