@@ -77,8 +77,8 @@ This script is compliant with the Standard Skript Code Conventions:
 
 [[http://dev.bukkit.org/bukkit-plugins/skript/forum/tutorials/69108/|{{http://i.imgur.com/BZ8lAno.png|SSCC Compliant}}]]
 
-=== Current Version: 1.0 ===
+=== Current Version: 1.1 ===
 
 === GitHub === 
 
-* http://bit.ly/1koRmsm - V1.0
+View the code on GitHub: http://bit.ly/1koRmsm
