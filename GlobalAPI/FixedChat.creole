@@ -1,0 +1,32 @@
+=== WARNING: THIS IS EXPERIMENTAL! USE AT YOUR OWN RISK! ===
+
+== FixedChat ==
+
+Not really an API of sorts, however, it provides a really cool feature that I've been wanting to show.
+
+=== Commands ===
+
+*/fixed-chat - fixedchat.admin - Main command
+*/fixed-chat add <message> - fixedchat.admin - Adds a message (can contain colours)
+*/fixed-chat remove <id> - fixedchat.admin - Removes a message. Do /fixed-chat list - to get the ID
+*/fixed-chat list - fixedchat.admin - Lists current messages
+
+*/fixed-chat start - fixedchat.admin - Starts the FixedChat
+*/fixed-chat end - fixedchat.admin - Ends the FixedChat
+
+*/fixed-chat start-second - fixedchat.admin - Starts every second updates (Doesn't start FixedChat)
+*/fixed-chat end-second - fixedchat.admin - Stop every second updates (Doesn't end FixedChat)
+
+The start|end-second is for every second updates, these DON'T affect the main running of FixedChat, but instead will update the chat every second, this feature is useful to override command messages, however, the command messages aren't saved and will be earsed every second
+
+=== Planned Features ===
+
+Suggest something
+
+=== Known Bugs ===
+
+None!
+
+=== Downloads and extra info! ===
+
+This script is included in GlobalAPI.sk - http://bit.ly/1k9vP6w
