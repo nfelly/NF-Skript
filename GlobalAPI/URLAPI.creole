@@ -1,0 +1,32 @@
+== URLAPI ==
+
+URLAPI is a new feature in GlobalAPI. It gives you the power to take any link and shorten it! 
+
+=== Usage ===
+
+{{{
+execute console command "/url-shortener-console (type) (Long URL)"
+message "Your shortened URL: %{url::api::short::(Long URL)}%"
+}}}
+
+NB: The (Long URL)'s variable is set to the LATEST shortened version, no matter of type
+
+=== How it works ===
+
+There are many URL shortening services, using some PHP magic I can use their API to create a short link.
+
+=== Commands ===
+
+*/urlapi list - urlapi.admin - Shows the list of types supported
+
+=== Planned Features ===
+
+Nothing! Suggest something!
+
+=== Known Bugs ===
+
+None!
+
+=== Downloads and extra info! ===
+
+This script is included in GlobalAPI.sk - http://bit.ly/1k9vP6w
