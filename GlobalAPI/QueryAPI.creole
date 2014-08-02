@@ -16,21 +16,21 @@ if arg 1 is set:
 }}}
 
 Useable Hooks For QueryAPI:
-motd = The MOTD of the server (Not 100% where it gets it from...)
-hostpost = Port of the server
-hostip = IP of the server
-gametype = Not sure what this is... I've only seen SMP return
-gameid = Not sure what this is either... I've only seen MINECRAFT
-version = Version =/= Software, I have no clue. Returns Minecraft version
-map = Main map of the server
-connected = Number of players connected
-maxplayers = Number of slots
-online = If the server is up or down
-software = The server jar you're using
+*motd = The MOTD of the server (Not 100% where it gets it from...)
+*hostpost = Port of the server
+*hostip = IP of the server
+*gametype = Not sure what this is... I've only seen SMP return
+*gameid = Not sure what this is either... I've only seen MINECRAFT
+*version = Version =/= Software, I have no clue. Returns Minecraft version
+*map = Main map of the server
+*connected = Number of players connected
+*maxplayers = Number of slots
+*online = If the server is up or down
+*software = The server jar you're using
 
 To use any hook just call the this variable back after running the API command:
 
-}}}
+{{{
 	{qua::server-info::<IP OF SERVER MUST STAY THE SAME!>::<API-HOOK AS ITS SHOWN!>}
 }}}
 
