@@ -1,0 +1,132 @@
+# WARNING WARNING WARNING WARNING WARNING
+# WARNING WARNING WARNING WARNING WARNING
+
+# PLEASE READ THE COMMITMENT DESCRIPTION! THIS IS UNTESTED! BY USING THIS SCRIPT IN ANYWAY YOU AGREE TO WHAT IS SAID IN THE COMMINTMENT DESCRIPTION
+
+# WARNING WARNING WARNING WARNING WARNING
+# WARNING WARNING WARNING WARNING WARNING
+
+variables:
+	{ls::setting::debug} = false
+
+options:
+	P: &8[&aLS&8]&a #Message prefix
+	LS-Perm: livesign.admin #Admin permission
+	LS-Line1: [LIVESIGN] #Top line of sign this is NOT case sensetive unless you've set it in your config
+	LS-Line1b: livesign  #This can be used for the top line of the sign its NOT case senstive unless you've set it in your config
+	LS-Online: Online
+	LS-Offline: Offline
+
+command /livesign [<text>] [<text>]:
+	permission: {@LS-Perm}
+	trigger:
+		if arg 1 is not set:
+			message "{@P} You must provide a sub-command!"
+		else if arg 1 is "help":
+			message "{@P} Livesign help menu"
+			message "{@P} /ls set-server <IP> - Sets the IP of the server you're creating the sign for"
+			message "{@P} /ls debug <on|off> - Enabled/disables debug mode"
+			message "{@P} /ls how-to create-sign - Shows how to create a sign"
+		else if arg 1 is "set-sever":
+			if arg 2 is set:
+				set {ls::player::%player%::set-server} to arg 2
+				message "{@P} Set sign IP to: %arg 2%"
+			else:
+				message "{@P} You must provide a server name! (/ls set-serever <server IP>"
+		else if arg 1 is "debug":
+			if arg 2 is "on":
+				set {ls::setting::debug} to true
+				message "{@P} Enabled debug mode"
+			else if arg 2 is "off":
+				set {ls::setting::debug} to false
+				message "{@P} Disabled debug mode"
+			else:
+				message "{@P} Invalid sub-command (/ls debug <on|off>)"
+		else if arg 1 is "how-to":
+			if arg 2 is "create-sign":
+				message "{@P} How to create a sign:"
+				message "{@P} Run the command /ls set-server <IP>"
+				message "{@P} If you fail to do this the sign will not work!"
+				message "{@P} Place a sign and set the first line to:"
+				message "{@LS-Line1}"
+				message "{@P} Or set the first line to:"
+				message "{@LS-Line1b}"
+				message "{@P} Set the second line to the name of the server"
+				message "{@P}Enter the sign text and Livesign will update the sign"
+		else:
+			message "{@P} Invalid sub-command (/ls help)
+	
+on sign change:
+	if player has permission "{@LS-Perm}":
+		execute console command "/ls-debug-console Sign Creation - Permission passed for: %player%"
+		set {_l1} to line 1 of sign
+		set {_l2} to line 2 of sign
+		if {_l1} is "{@LS-Line1}":
+			execute console command "/ls-debug-console Sign Creation - Line 1 passed for: %player%"
+			if {_l2} is set:
+				if {ls::player::%player%::set-server} is not set:
+					message "{@P} You must set the server IP you want to be used (/ls set-server <IP>). Command stopped"
+					execute console command "/ls-debug-console Sign Creation - Failed to create sign due to no server being set for: %player%"
+					stop
+				execute console command "/ls-debug-console Sign Creation - Line 2 passed for: %player%"
+				set {ls::signs::server::%location of event-block%} to {_l2}
+				execute console command "/ls-debug-console Sign Creation - Set server type to: %{_l2}"
+				execute console command "/online-check-console %{ls::player::%player%::set-server}%
+				execute console command "/ls-debug console Sign Creation - Fetching information for a sign for: %player%"
+				if {onl::checked::%{ls::player::%player%::set-server}%} is "offline":
+					set line 3 to "{@LS-Offline}"
+					set line 4 to ""
+					execute console command "/ls-debug-console Sign Creation - Server is offline. Sign created"
+				else:
+					set line 3 to "{@LS-Online}"
+					execute console command "/ls-debug-console Sign Creation - Server is online. Fetching player count"
+					execute console command "/query-api-console server-info-live all %{ls::player::%player%::set-server}%"
+					set {_con} to {qua::server-info::%{ls::player::%player%::set-server}%::connected}
+					set {_max} to {qua::server-info::%{ls::player::%player%::set-server}%::maxplayer}
+					set line 4 to "%{_con}%/%{_max}%"
+					execute console command "/ls-debug-console Sign Creation - Set line 4 of the sign to: %line 4% for: %player%"
+					set {ls::signs::locs::%location of event-block%} to location of event-block
+					execute console command "/ls-debug-console Sign Creation - Successfully created sign for: %player% at: %location of event-block%"
+					
+every 30 seconds:
+	execute console command "/ls-debug-console Sign Update - Beginning the sign update"
+	loop {ls::signs::locs::*}:
+		if block at loop-value is not sign:
+			execute console command "/ls-debug-console Sign Update - Failed to update sign at: %loop-value%. Will attempt to try and update it, but if the update fails again the sign will be removed from the update list (Attempt will start after every other sign has been updated)"
+			set {_ls::signs-to-check::%loop-value%} to loop-value
+		else:
+			execute console command "/online-check-console %{ls::signs::server::%loop-value%}%"
+			if {onl::checked::%{ls::signs::server::%loop-value%}%} is "offline":
+				set line 3 of block at loop-value to "{@LS-Offline}"
+				set line 4 of block at loop-value to ""
+			else:
+				set line 4 of block at loop-value to "{@LS-Online}"
+				execute console command "/query-api-console server-info-live all %{ls::signs::server::%loop-value}%"
+				set {_con} to {qua::server-info::%{ls::signs::server::%loop-value}%::connected}
+				set {_max} to {qua::server-info::%{ls::signs::server::%loop-value}%::maxplayer}
+				set line 4 of block at loop-value to "%{_con}%/%{_max}%"
+	loop {_ls::signs-to-check::*}:
+		if block at loop-value is not sign:
+			delete {ls::signs::locs::%loop-valu%}
+			delete {ls::signs::server::%loop-value%}
+			execute console command "/ls-debug-console Sign Update - Failed to update sign at: %loop-value% for the second time. The sign has been removed from the update list"
+		else:
+			execute console command "/online-check-console %{ls::signs::server::%loop-value%}%"
+			if {onl::checked::%{ls::signs::server::%loop-value%}%} is "offline":
+				set line 3 of block at loop-value to "{@LS-Offline}"
+				set line 4 of block at loop-value to ""
+			else:
+				set line 4 of block at loop-value to "{@LS-Online}"
+				execute console command "/query-api-console server-info-live all %{ls::signs::server::%loop-value}%"
+				set {_con} to {qua::server-info::%{ls::signs::server::%loop-value}%::connected}
+				set {_max} to {qua::server-info::%{ls::signs::server::%loop-value}%::maxplayer}
+				set line 4 of block at loop-value to "%{_con}%/%{_max}%"
+	execute console command "/ls-debug-console Sign Update - Finished sign updates"
+	
+command /ls-debug-console <text>:
+	executable by: console
+	trigger:
+		if {ls::setting::debug} is true:
+			loop all players:
+				if player has permission "{@LS-Perm}":
+					send "{@P} [DEBUG] %arg 1%" to loop-player
