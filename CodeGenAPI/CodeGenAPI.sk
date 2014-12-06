@@ -2,7 +2,8 @@
 #By nfell2009
 
 options:
-	P: &8[&aCGA&8]&a
+	P: &8[&aCGA&8]&a  # Prefix for all messages
+	N: &a             # Default text colour
 
 on script load:
 	delete {cga.list::*}
@@ -41,13 +42,14 @@ on script load:
 	add "7" to {cga.list::*}
 	add "8" to {cga.list::*}
 	add "9" to {cga.list::*}
+	loop {cga.ulist::*}:
+		add loop-value to {cga.list::*}
 	set {cga.max} to size of {cga.list::*}
-	
 command /cgapi [<text>] [<text>]:
 	permission: codegenapi.usage
 	trigger:
 		if arg 1 is not set:
-			message "{@P} You must provide a sub-command!"
+			make player execute command "/cgapi help"
 		else if arg 1 is "api":
 			if arg 2 is "hooks" or "list":
 				if size of {cga.apilist.codes::*} is 0:
@@ -76,8 +78,69 @@ command /cgapi [<text>] [<text>]:
 				message "{@P} Want another stat added? Contact nfell2009 on the Skript Forums"
 			else if arg 2 is "count":
 				message "{@P} The size of the codes list is: %size of {cga.codelist::*}%"
+		else if arg 1 is "add":
+			if player doesn't have permission "codegenapi.admin":
+				message "{@P} You don't have permission to do that (Required permission: codegenapi.admin)"
+				stop
+			if arg 2 is set:
+				if {cga.list::*} does not contain arg 2:
+					set {cga.ulist::%arg 2%} to arg 2
+					message "{@P} Successfully added: %arg 2% to the list of letters within CodeGenAPI"
+					message "{@P} CodeGenAPI will now update the list"
+					add arg 2 to {cga.list::*}
+					set {cga.max} to size of {cga.list::*}
+		else if arg 1 is "remove":
+			if player doesn't have permission "codegenapi.admin":
+				message "{@P} You don't have permission to do that (Required permission: codegenapi.admin)"
+				stop
+			if arg 2 is set:
+				if {cga.list::*} contains arg 2:
+					remove arg 2 from {cga.ulist::*}
+					message "{@P} Successfully removed: %arg 2% from the list of letters within CodeGenAPI"
+					message "{@P} CodeGenAPI will now update the list"
+					remove arg 2 from {cga.list::*}
+					set {cga.max} to size of {cga.list::*}
+		else if arg 1 is "purge":
+			if player doesn't have permission "codegenapi.admin":
+				message "{@P} You don't have permission to do that (Required permission: codegenapi.admin)"
+				stop
+			if arg 2 is "hooks" or "list":
+				message "{@P} This will delete all the hooks that other scripts have done with CodeGenAPI"
+				message "{@P} This &4&lCANNOT {@N}be undone! You have been warned!"
+				message "{@P} Performing the deletion will delete:"
+				message "{@P} - All API keys stored in the CodeGenAPI list"
+				message "{@P} - The variable that is used to set the key for the script"
+				message "{@P} Please note that by deleting the API keys may cause scripts not to work correctly as they rely on CodeGenAPI and cannot access it due to not having an API key"
+				message "{@P} Enter: /cgapi purge confirm - to delete the hooks"
+				set {cga.%player%.purge} to "hooks"
+			else if arg 2 is "codes":
+				message "{@P} This will delete all the codes that other scripts have done with CodeGenAPI"
+				message "{@P} This &4&lCANNOT {@N}be undone! You have been warned!"
+				message "{@P} Unfortunately CodeGenAPI cannot delete every variable. This is because CodeGenAPI doesn't track the Unique Identifiers that scripts use"
+				message "{@P} Please note that by deleting the codes some scripts may not work correctly as they rely on them codes"
+				message "{@P} Enter: /cgapi purge confirm - to delete the hooks"
+				set {cga.%player%.purge} to "codes"
+			else if arg 2 is "confirm":
+				if {cga.%player%.purge} is "hooks":
+					loop {cga.apilist.codes::*}:
+						delete {cga.%{cga.apilist.names::%{_code}%}%}
+					delete {cga.apilist.codes::*}
+					delete {cga.apilist.names::*}
+					message "{@P} Successfully deleted all hooks!"
+				else if {cga.%player%.purge} is "codes":
+					delete {cga.codelist::*}
+					message "{@P} Successfully deleted all codes!"
+		else:
+			message "{@P} Help:"
+			message "{@P} /cgapi api <hooks|list> - Lists all scripts using CodeGenAPI"
+			message "{@P} /cgapi code stats - Gives stats about CodeGenAPI"
+			message "{@P} /cgapi code count - Gives the number of codes generated"
+			message "{@P} /cgapi add <letter> - Adds a letter to the generation list"
+			message "{@P} /cgapi remove <letter> - Removes a letter from the generation list"
+			message "{@P} /cgapi purge hooks - Deletes all API keys"
+			message "{@P} /cgapi purge codes - Deletes all codes"
 					
-command /codegenapi [<text>] [<text>] [<text>] [<text>] [<text>]:
+command /codegenapi [<text>] [<text>] [<text>] [<text>] [<text>] [<text>]:
 	executable by: console
 	trigger:
 		if arg 1 is "generate" or "gen" or "g":
@@ -142,6 +205,80 @@ command /codegenapi [<text>] [<text>] [<text>] [<text>] [<text>]:
 									set {cga.codelist::%{_code}%} to {_code}
 									set {cga.%arg 3%.%arg 4%.code} to {_code}
 									exit
+					else:
+						broadcast "{@P} A Skript tried to generate a code with CodeGenAPI, but failed to give a unique identifier"
+				else:
+					set {_code} to "&c[ERROR] CodeGenAPI failed to get the API key so couldn't create a code..."
+			else if arg 2 is "lc" or "longcode":
+				set {_key} to arg 3
+				if arg 3 is not set:
+					broadcast "{@P} A Skript tried to generate a code with CodeGenAPI, but failed to supply its API Key"
+				else if {cga.codelist::%{_key}%} is not set:
+					broadcast "{@P} A Skript tried to generate a code with CodeGenAPI, but the API Key given doesn't exist"
+				else if {cga.codelist::%{_key}%} is set:
+					set {_code} to ""
+					if arg 4 is set:
+						if arg 5 is set:
+							if arg 6 is set:
+								set {_key} to arg 3
+								set {_ui} to arg 4
+								set {_no} to arg 5 parsed as integer
+								set {_len} to arg 6 parsed as integer
+								loop {_no} times:
+									add 1 to {_numm}
+									set {_code.%{_numm}%} to ""
+								loop 100000000 times:
+									loop {_no} times:
+										add 1 to {_num}
+										loop {_len} times:
+											set {_type} to a rounded random integer between 1 and 10
+											if {_type} is equal to 1 or 3 or 5 or 7 or 9:
+												set {_rand} to a rounded random integer between 27 and {cga.max}
+												set {_char} to {cga.list::%{_rand}%}
+											else:
+												set {_rand} to a rounded random integer between 1 and 26
+												set {_char} to {cga.list::%{_rand}%}
+											set {_code.%{_num}%} to "%{_code.%{_num}%}%%{_char}%"
+											broadcast "%{_code.%{_num}%}%"
+									loop {_no} times:
+										add 1 to {_count}
+										if {_fcode} is not set:
+											set {_fcode} to "%{_code.%{_count}%}%"
+										else:
+											set {_fcode} to "%{_fcode}%-%{_code.%{_count}%}%"
+									broadcast "%{_fcode}%"
+									if {cga.codelist::%{_fcode}%} is not set:
+										set {cga.codelist::%{_fcode}%} to {_fcode}
+										set {cga.%{_key}%.%{_ui}%.code} to {_fcode}
+										stop
+							else:
+								set {_key} to arg 3
+								set {_ui} to arg 4
+								set {_no} to arg 5 parsed as integer
+								loop {_no} times:
+									add 1 to {_numm}
+									set {_code.%{_numm}%} to ""
+								loop 100000000 times:
+									loop {_no} times:
+										loop 4 times:
+											add 1 to {_num}
+											set {_type} to a rounded random integer between 1 and 10
+											if {_type} is equal to 1 or 3 or 5 or 7 or 9:
+												set {_rand} to a rounded random integer between 27 and {cga.max}
+												set {_char} to {cga.list::%{_rand}%}
+											else:
+												set {_rand} to a rounded random integer between 1 and 26
+												set {_char} to {cga.list::%{_rand}%}
+											set {_code.%{_num}%} to "%{_code}%%{_char}%"
+									loop {_num} times:
+										add 1 to {_count}
+										set {_fcode} to "%{_fcode}%-%{_code.%{_count}%}%"
+									if {cga.codelist::%{_fcode}%} is not set:
+										set {cga.codelist::%{_fcode}%} to {_fcode}
+										set {cga.%{_key}%.%{_ui}%.code} to {_fcode}
+										stop
+						else:
+							broadcast "{@P} A script attempted to make a Long Code but didn't specify a length"
 					else:
 						broadcast "{@P} A Skript tried to generate a code with CodeGenAPI, but failed to give a unique identifier"
 				else:
